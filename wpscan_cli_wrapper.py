@@ -175,15 +175,16 @@ def print_plugin_report(result: Dict[str, Any]):
     # WordPress Version
     if 'version' in data:
         version_info = data['version']
-        wp_version = version_info.get('number', 'Unknown')
-        wp_status = version_info.get('status', 'unknown')
-        wp_vulns = len(version_info.get('vulnerabilities', []))
-        
-        print(f"\n📦 WordPress Core")
-        print(f"   Version: {wp_version}")
-        print(f"   Status: {'❌ FAIL' if wp_status == 'insecure' or wp_vulns > 0 else '✅ PASS'}")
-        if wp_vulns > 0:
-            print(f"   Vulnerabilities: {wp_vulns}")
+        if version_info and isinstance(version_info, dict):
+            wp_version = version_info.get('number', 'Unknown')
+            wp_status = version_info.get('status', 'unknown')
+            wp_vulns = len(version_info.get('vulnerabilities', []))
+            
+            print(f"\n📦 WordPress Core")
+            print(f"   Version: {wp_version}")
+            print(f"   Status: {'❌ FAIL' if wp_status == 'insecure' or wp_vulns > 0 else '✅ PASS'}")
+            if wp_vulns > 0:
+                print(f"   Vulnerabilities: {wp_vulns}")
     
     # Plugins
     if 'plugins' in data and data['plugins']:

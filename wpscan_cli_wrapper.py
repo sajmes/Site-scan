@@ -387,9 +387,13 @@ def generate_html_report(results: List[Dict[str, Any]]) -> str:
                         vulnerable_plugins += 1
                         total_vulns += len(vulns)
             if 'main_theme' in data:
-                total_vulns += len(data['main_theme'].get('vulnerabilities', []))
+                theme_data = data['main_theme']
+                if theme_data and isinstance(theme_data, dict):
+                    total_vulns += len(theme_data.get('vulnerabilities', []))
             if 'version' in data:
-                total_vulns += len(data['version'].get('vulnerabilities', []))
+                version_data = data['version']
+                if version_data and isinstance(version_data, dict):
+                    total_vulns += len(version_data.get('vulnerabilities', []))
     
     # Summary section
     html += """
@@ -432,9 +436,13 @@ def generate_html_report(results: List[Dict[str, Any]]) -> str:
             for plugin_data in data['plugins'].values():
                 site_vulns += len(plugin_data.get('vulnerabilities', []))
         if 'main_theme' in data:
-            site_vulns += len(data['main_theme'].get('vulnerabilities', []))
+            theme_data = data['main_theme']
+            if theme_data and isinstance(theme_data, dict):
+                site_vulns += len(theme_data.get('vulnerabilities', []))
         if 'version' in data:
-            site_vulns += len(data['version'].get('vulnerabilities', []))
+            version_data = data['version']
+            if version_data and isinstance(version_data, dict):
+                site_vulns += len(version_data.get('vulnerabilities', []))
         
         # Status badge
         if site_vulns == 0:
@@ -447,10 +455,12 @@ def generate_html_report(results: List[Dict[str, Any]]) -> str:
         # WordPress info
         html += '<div class="info-grid">'
         if 'version' in data:
-            wp_version = data['version'].get('number', 'Unknown')
-            wp_status = data['version'].get('status', 'unknown')
-            status_text = '⚠️ Insecure' if wp_status == 'insecure' else '✅ Secure'
-            html += f'<div class="info-card"><div class="info-label">WordPress Version</div><div class="info-value">{wp_version} {status_text}</div></div>'
+            version_data = data['version']
+            if version_data and isinstance(version_data, dict):
+                wp_version = version_data.get('number', 'Unknown')
+                wp_status = version_data.get('status', 'unknown')
+                status_text = '⚠️ Insecure' if wp_status == 'insecure' else '✅ Secure'
+                html += f'<div class="info-card"><div class="info-label">WordPress Version</div><div class="info-value">{wp_version} {status_text}</div></div>'
         
         if 'main_theme' in data:
             theme = data['main_theme']
@@ -555,11 +565,15 @@ def print_summary(results: List[Dict[str, Any]]):
             
             # Count theme vulnerabilities
             if 'main_theme' in data:
-                total_vulns += len(data['main_theme'].get('vulnerabilities', []))
+                theme_data = data['main_theme']
+                if theme_data and isinstance(theme_data, dict):
+                    total_vulns += len(theme_data.get('vulnerabilities', []))
             
             # Count WordPress core vulnerabilities
             if 'version' in data:
-                total_vulns += len(data['version'].get('vulnerabilities', []))
+                version_data = data['version']
+                if version_data and isinstance(version_data, dict):
+                    total_vulns += len(version_data.get('vulnerabilities', []))
     
     print(f"Sites scanned: {total}")
     print(f"Successful scans: {successful}")
